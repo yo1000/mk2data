@@ -28,7 +28,13 @@ class TableMarkdownTranslator(
         }
     }
 
-    fun translateToInsertSqls(markdown: String): Map<String, List<String>> = Parser.builder(parserOptions).build().parse(markdown).let {
+    @Deprecated(
+            message = "Replace with com.yo1000.mk2data.TableMarkdownTranslator.translateToInsertSqlMap(String)",
+            replaceWith = ReplaceWith("translateToInsertSqlMap(markdown)")
+    )
+    fun translateToInsertSqls(markdown: String): Map<String, List<String>> = translateToInsertSqlMap(markdown)
+
+    fun translateToInsertSqlMap(markdown: String): Map<String, List<String>> = Parser.builder(parserOptions).build().parse(markdown).let {
         TableExtractingVisitor(parserOptions).getTables(it).map {
             val table: String = it.caption?.
                     rows?.takeIf { it.isNotEmpty() }?.first()?.

@@ -7,7 +7,7 @@ import java.sql.DriverManager
 
 class TableMarkdownTranslatorTest {
     @Test
-    fun testFlexmark() {
+    fun testTranslateToInsertSqlMap() {
         Class.forName(Driver::class.qualifiedName)
         DriverManager.getConnection("jdbc:h2:mem:testdb").use {
             it.createStatement().use {
@@ -29,7 +29,7 @@ class TableMarkdownTranslatorTest {
             }
 
             it.createStatement().use { stmt ->
-                TableMarkdownTranslator().translateToInsertSqls("""
+                TableMarkdownTranslator().translateToInsertSqlMap("""
                     | id   | name    | age | blood   |
                     |------|---------|-----|---------|
                     | '10' | 'Alice' | 20  | 'A'     |
