@@ -9,6 +9,7 @@
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
+    <name>mk2data</name>
     <description>Translate markdown formatted table to INSERT DML</description>
     <url>https://github.com/yo1000/mk2data</url>
 
