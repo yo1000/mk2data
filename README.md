@@ -8,7 +8,7 @@ Translate markdown formatted table to INSERT DML.
 <dependency>
     <groupId>com.yo1000</groupId>
     <artifactId>mk2data</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -18,7 +18,7 @@ Details refer to `src/test/kotlin/com/yo1000/mk2data/TableMarkdownTranslatorTest
 ```kotlin
 val stmt: Statement = ...
 
-TableMarkdownTranslator().translateToInsertSqls("""
+TableMarkdownTranslator().translateToInsertSqlMap("""
     | id   | name    | age | blood   |
     |------|---------|-----|---------|
     | '10' | 'Alice' | 20  | 'A'     |
