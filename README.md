@@ -8,7 +8,7 @@ Translate markdown formatted table to INSERT DML.
 <dependency>
     <groupId>com.yo1000</groupId>
     <artifactId>mk2data</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.1</version>
 </dependency>
 ```
 
@@ -32,7 +32,7 @@ MarkdownTableTranslator().translateToInsertSqlMap("""
     | '2000' | 'Tama'   | 'cats'   | '20'
     | '9000' |          | 'dogs'   | null
     [pets]
-""".trimIndent()).forEach {
+""").forEach {
     it.value.forEach(stmt::addBatch)
 }
 

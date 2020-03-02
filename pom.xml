@@ -6,7 +6,7 @@
 
     <groupId>com.yo1000</groupId>
     <artifactId>mk2data</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.3.1</version>
     <packaging>jar</packaging>
 
     <name>mk2data</name>
