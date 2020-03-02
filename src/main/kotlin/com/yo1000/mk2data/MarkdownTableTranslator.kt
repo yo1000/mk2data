@@ -3,6 +3,7 @@ package com.yo1000.mk2data
 import com.vladsch.flexmark.ext.tables.TableExtractingVisitor
 import com.vladsch.flexmark.ext.tables.TablesExtension
 import com.vladsch.flexmark.parser.Parser
+import com.vladsch.flexmark.util.ast.Document
 import com.vladsch.flexmark.util.data.DataKey
 import com.vladsch.flexmark.util.data.DataSet
 import com.vladsch.flexmark.util.data.MutableDataSet
@@ -49,7 +50,7 @@ class MarkdownTableTranslator(
     )
     fun translateToInsertSqls(markdown: String): Map<String, List<String>> = translateToInsertSqlMap(markdown)
 
-    fun translateToInsertSqlMap(markdown: String): Map<String, List<String>> = Parser.builder(parserOptions).build().parse(markdown).let {
+    fun translateToInsertSqlMap(markdown: String): Map<String, List<String>> = parseMarkdown(markdown).let {
         TableExtractingVisitor(parserOptions).getTables(it).map {
             parseMarkdownTable(it) { table, columns, rows ->
                 table to rows.map {
@@ -77,7 +78,7 @@ class MarkdownTableTranslator(
         }
     }.toMap()
 
-    fun translateToTables(markdown: String, connection: Connection): List<Table> = Parser.builder(parserOptions).build().parse(markdown).let {
+    fun translateToTables(markdown: String, connection: Connection): List<Table> = parseMarkdown(markdown).let {
         TableExtractingVisitor(parserOptions).getTables(it).map {
             parseMarkdownTable(it) { table, columns, rows ->
                 connection.createStatement().use { it.executeQuery("""
@@ -141,6 +142,8 @@ class MarkdownTableTranslator(
             }
         }
     }
+
+    private fun parseMarkdown(markdown: String): Document = Parser.builder(parserOptions).build().parse(markdown.trimIndent())
 
     private fun <T> parseMarkdownTable(markdownTable: MarkdownTable, handleTable: (String, List<String>, List<List<String>>) -> T): T {
         val table: String = markdownTable.caption?.rows?.takeIf { it.isNotEmpty() }?.first()?.cells?.takeIf { it.isNotEmpty() }?.first()?.text?.unescape()

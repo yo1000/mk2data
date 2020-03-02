@@ -36,7 +36,7 @@ class MarkdownTableTranslatorTest {
                     [pets]
                     
                     FREE Comment area
-                """.trimIndent()).forEach {
+                """).forEach {
                     it.value.forEach(stmt::addBatch)
                 }
                 stmt.executeBatch()
@@ -78,7 +78,7 @@ class MarkdownTableTranslatorTest {
                     [pets]
                     
                     FREE Comment area 
-                """.trimIndent(), it).forEach {
+                """, it).forEach {
                     it.value.forEach(stmt::addBatch)
                 }
                 stmt.executeBatch()
@@ -115,7 +115,7 @@ class MarkdownTableTranslatorTest {
                     [pets]
                     
                     FREE Comment area
-                """.trimIndent()).forEach {
+                """).forEach {
                     it.value.forEach(stmt::addBatch)
                 }
                 stmt.executeBatch()
