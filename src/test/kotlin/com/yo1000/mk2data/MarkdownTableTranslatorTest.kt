@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test
 import java.sql.Connection
 import java.sql.DriverManager
 
-class TableMarkdownTranslatorTest {
+class MarkdownTableTranslatorTest {
     @Test
     fun test_TranslateToInsertSqlMap() {
         testTemplate {
             it.createStatement().use { stmt ->
-                TableMarkdownTranslator().translateToInsertSqlMap("""
+                MarkdownTableTranslator().translateToInsertSqlMap("""
                     FREE Comment area
 
                     | id   | name    | age | blood   |
@@ -48,7 +48,7 @@ class TableMarkdownTranslatorTest {
     fun test_TranslateToInsertSqlMap_with_Connection() {
         testTemplate {
             it.createStatement().use { stmt ->
-                TableMarkdownTranslator().translateToInsertSqlMap("""
+                MarkdownTableTranslator().translateToInsertSqlMap("""
                     FREE Comment area
                     
                     | id   | name    | age | blood   |
@@ -79,6 +79,43 @@ class TableMarkdownTranslatorTest {
                     
                     FREE Comment area 
                 """.trimIndent(), it).forEach {
+                    it.value.forEach(stmt::addBatch)
+                }
+                stmt.executeBatch()
+            }
+        }
+    }
+
+    @Test
+    fun test_TranslateToInsertSqlMap_from_alias() {
+        testTemplate {
+            it.createStatement().use { stmt ->
+                TableMarkdownTranslator().translateToInsertSqlMap("""
+                    FREE Comment area
+
+                    | id   | name    | age | blood   |
+                    |------|---------|-----|---------|
+                    | '10' | 'Alice' | 20  | 'A'     |
+                    | '20' | 'Bob'   | 18  |         |
+                    [owners]
+                    
+                    FREE Comment area
+
+                    | id     | name     | category | owners_id
+                    |--------|----------|----------|-----------
+                    | '1000' | 'Max'    | 'dogs'   | '10'
+                    | '1001' | 'Bella'  | 'dogs'   | '10'
+                    | '1002' |          | 'dogs'   | '10'
+                    | '1003' | null     | 'dogs'   | '10'
+                    | '1004' | NULL     | 'dogs'   | '10'
+                    | '1005' | ''       | 'dogs'   | '10'
+                    | '1006' | 'null'   | 'dogs'   | '10'
+                    | '2000' | 'Tama'   | 'cats'   | '20'
+                    | '9000' |          | 'dogs'   | null
+                    [pets]
+                    
+                    FREE Comment area
+                """.trimIndent()).forEach {
                     it.value.forEach(stmt::addBatch)
                 }
                 stmt.executeBatch()

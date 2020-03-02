@@ -12,11 +12,23 @@ import java.sql.Types
 import kotlin.reflect.full.staticProperties
 
 /**
+ * Alias to MarkdownTableTranslator.
+ */
+@Deprecated(
+        message = "Replace with com.yo1000.mk2data.MarkdownTableTranslator",
+        replaceWith = ReplaceWith(
+                expression = "MarkdownTableTranslator",
+                imports = ["com.yo1000.mk2data.MarkdownTableTranslator"]
+        )
+)
+typealias TableMarkdownTranslator = MarkdownTableTranslator
+
+/**
  * Translate markdown formatted table to INSERT DML.
  *
  * @author yo1000
  */
-class TableMarkdownTranslator(
+class MarkdownTableTranslator(
         val options: Map<DataKey<Any>, Any> = emptyMap(),
         val enclosure: Enclosure = Enclosure.AUTO
 ) {
