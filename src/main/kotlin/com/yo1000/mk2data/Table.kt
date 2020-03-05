@@ -1,29 +1,13 @@
 package com.yo1000.mk2data
 
-data class Table(
+data class Table<T>(
         val name: String,
-        val columns: List<Column>,
-        val rows: List<Row>
-)
-
-data class Column(
-        val name: String
-)
-
-data class Row(
-        val columnMappedValues: Map<Column, Value>
+        private val data: List<List<T?>>
 ) {
-    val values: Collection<Value> get() = columnMappedValues.values
+    val columns: List<String> get() = data[0].map { it.toString() }
+    val rows: List<Row<T>> get() = data.filterIndexed { index, _ -> index > 0 }.map { Row(it) }
 }
 
-data class Value(
-        val rawValue: String?
-) {
-    fun rawValueWithEnclosure(enclosure: Enclosure): String? = rawValue?.let {
-        when (enclosure) {
-            Enclosure.NEVER -> rawValue
-            Enclosure.ALWAYS,
-            Enclosure.AUTO -> "'$rawValue'"
-        }
-    }
-}
+data class Row<T>(
+        val values: List<T?>
+)
