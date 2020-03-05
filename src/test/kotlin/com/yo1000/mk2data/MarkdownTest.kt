@@ -291,7 +291,7 @@ class MarkdownTest {
                 | '2000' | 'Tama'   | 'cats'   | '20'
                 | '9000' |          | 'dogs'   | null
                 [pets]
-            """.trimIndent()) { fetched, row ->
+            """) { fetched, row ->
                 assertThat(fetched).isTrue()
             }
         }
