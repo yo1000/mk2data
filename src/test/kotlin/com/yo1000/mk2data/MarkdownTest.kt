@@ -253,43 +253,42 @@ class MarkdownTest {
             assertThat(MarkdownUtils.setup(it, """
                 | ID   | Name    | age | BLooD   | Birth_Date
                 |------|---------|-----|---------|------------
-                | '10' | 'Alice' | 20  | 'A'     | 2000-03-05
-                | '20' | 'Bob'   | 18  |         | 2002-01-02
+                | '10' | Alice   | 20  | 'A'     | 2000-03-05
+                | '20' | Bob     | 18  |         | 2002-01-02
                 [owners]
                 
                 | id     | name     | category | owners_id
                 |--------|----------|----------|-----------
-                | '1000' | 'Max'    | 'dogs'   | '10'
-                | '1001' | 'Bella'  | 'dogs'   | '10'
-                | '1002' |          | 'dogs'   | '10'
-                | '1003' | null     | 'dogs'   | '10'
-                | '1004' | NULL     | 'dogs'   | '10'
-                | '1005' | ''       | 'dogs'   | '10'
-                | '1006' | 'null'   | 'dogs'   | '10'
-                | '2000' | 'Tama'   | 'cats'   | '20'
-                | '9000' |          | 'dogs'   | null
+                | '1000' | 'Max'    | dogs     | 10
+                | '1001' | 'Bella'  | dogs     | 10
+                | '1002' |          | dogs     | 10
+                | '1003' | null     | dogs     | 10
+                | '1004' | NULL     | dogs     | 10
+                | '1005' | ''       | dogs     | 10
+                | '1006' | 'null'   | dogs     | 10
+                | '2000' | 'Tama'   | cats     | 20
+                | '9000' |          | dogs     | null
                 [pets]
-                
             """)).isEqualTo(11) // Insert rows
 
             MarkdownUtils.expect(it, """
                 | ID   | Name    | age | BLooD   | Birth_Date
                 |------|---------|-----|---------|------------
-                | '10' | 'Alice' | 20  | 'A'     | 2000-03-05
-                | '20' | 'Bob'   | 18  |         | 2002-01-02
+                | '10' | Alice   | 20  | 'A'     | 2000-03-05
+                | '20' | Bob     | 18  |         | 2002-01-02
                 [owners]
                 
                 | id     | name     | category | owners_id
                 |--------|----------|----------|-----------
-                | '1000' | 'Max'    | 'dogs'   | '10'
-                | '1001' | 'Bella'  | 'dogs'   | '10'
-                | '1002' |          | 'dogs'   | '10'
-                | '1003' | null     | 'dogs'   | '10'
-                | '1004' | NULL     | 'dogs'   | '10'
-                | '1005' | ''       | 'dogs'   | '10'
-                | '1006' | 'null'   | 'dogs'   | '10'
-                | '2000' | 'Tama'   | 'cats'   | '20'
-                | '9000' |          | 'dogs'   | null
+                | '1000' | 'Max'    | dogs     | 10
+                | '1001' | 'Bella'  | dogs     | 10
+                | '1002' |          | dogs     | 10
+                | '1003' | null     | dogs     | 10
+                | '1004' | NULL     | dogs     | 10
+                | '1005' | ''       | dogs     | 10
+                | '1006' | 'null'   | dogs     | 10
+                | '2000' | 'Tama'   | cats     | 20
+                | '9000' |          | dogs     | null
                 [pets]
             """) { fetched, row ->
                 assertThat(fetched).isTrue()
