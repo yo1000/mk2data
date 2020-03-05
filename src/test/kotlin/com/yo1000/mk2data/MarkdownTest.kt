@@ -250,6 +250,52 @@ class MarkdownTest {
     fun test_markdown_to_data_expect() {
         DriverManager.getConnection("jdbc:h2:mem:testdb").use {
             setupTables(it)
+            it.createStatement().use { listOf(
+                    "INSERT INTO owners (id, name, age, blood, birth_date) VALUES ('10', 'Alice', 20, 'A' , '2000-03-05')",
+                    "INSERT INTO owners (id, name, age, blood, birth_date) VALUES ('20', 'Bob'  , 18, null, '2002-01-02')",
+
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1000', 'Max'  , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1001', 'Bella', 'dogs', '10')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1002', null   , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1003', null   , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1004', null   , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1005', ''     , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1006', 'null' , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('2000', 'Tama' , 'cats', '20')",
+                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('9000', null   , 'dogs', null)"
+            ).forEach(it::addBatch)
+                it.executeBatch()
+            }
+
+            MarkdownUtils.expect(it, """
+                | ID   | Name    | age | BLooD   | Birth_Date
+                |------|---------|-----|---------|------------
+                | '10' | 'Alice' | 20  | 'A'     | 2000-03-05
+                | '20' | 'Bob'   | 18  |         | 2002-01-02
+                [owners]
+                
+                | id     | name     | category | owners_id
+                |--------|----------|----------|-----------
+                | '1000' | 'Max'    | 'dogs'   | '10'
+                | '1001' | 'Bella'  | 'dogs'   | '10'
+                | '1002' |          | 'dogs'   | '10'
+                | '1003' | null     | 'dogs'   | '10'
+                | '1004' | NULL     | 'dogs'   | '10'
+                | '1005' | ''       | 'dogs'   | '10'
+                | '1006' | 'null'   | 'dogs'   | '10'
+                | '2000' | 'Tama'   | 'cats'   | '20'
+                | '9000' |          | 'dogs'   | null
+                [pets]
+            """.trimIndent()) { fetched, row ->
+                assertThat(fetched).isTrue()
+            }
+        }
+    }
+
+    @Test
+    fun test_markdown_to_data_setup_and_expect() {
+        DriverManager.getConnection("jdbc:h2:mem:testdb").use {
+            setupTables(it)
             assertThat(MarkdownUtils.setup(it, """
                 | ID   | Name    | age | BLooD   | Birth_Date
                 |------|---------|-----|---------|------------
@@ -291,52 +337,6 @@ class MarkdownTest {
                 | '9000' |          | dogs     | null
                 [pets]
             """) { fetched, row ->
-                assertThat(fetched).isTrue()
-            }
-        }
-    }
-
-    @Test
-    fun test_markdown_to_data_setup_and_expect() {
-        DriverManager.getConnection("jdbc:h2:mem:testdb").use {
-            setupTables(it)
-            it.createStatement().use { listOf(
-                    "INSERT INTO owners (id, name, age, blood, birth_date) VALUES ('10', 'Alice', 20, 'A' , '2000-03-05')",
-                    "INSERT INTO owners (id, name, age, blood, birth_date) VALUES ('20', 'Bob'  , 18, null, '2002-01-02')",
-
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1000', 'Max'  , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1001', 'Bella', 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1002', null   , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1003', null   , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1004', null   , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1005', ''     , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1006', 'null' , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('2000', 'Tama' , 'cats', '20')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('9000', null   , 'dogs', null)"
-            ).forEach(it::addBatch)
-                it.executeBatch()
-            }
-
-            MarkdownUtils.expect(it, """
-                | ID   | Name    | age | BLooD   | Birth_Date
-                |------|---------|-----|---------|------------
-                | '10' | 'Alice' | 20  | 'A'     | 2000-03-05
-                | '20' | 'Bob'   | 18  |         | 2002-01-02
-                [owners]
-                
-                | id     | name     | category | owners_id
-                |--------|----------|----------|-----------
-                | '1000' | 'Max'    | 'dogs'   | '10'
-                | '1001' | 'Bella'  | 'dogs'   | '10'
-                | '1002' |          | 'dogs'   | '10'
-                | '1003' | null     | 'dogs'   | '10'
-                | '1004' | NULL     | 'dogs'   | '10'
-                | '1005' | ''       | 'dogs'   | '10'
-                | '1006' | 'null'   | 'dogs'   | '10'
-                | '2000' | 'Tama'   | 'cats'   | '20'
-                | '9000' |          | 'dogs'   | null
-                [pets]
-            """.trimIndent()) { fetched, row ->
                 assertThat(fetched).isTrue()
             }
         }
