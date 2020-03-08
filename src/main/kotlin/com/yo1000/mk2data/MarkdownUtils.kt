@@ -1,7 +1,6 @@
 package com.yo1000.mk2data
 
 import java.sql.Connection
-import java.sql.ResultSetMetaData
 
 class MarkdownUtils {
     companion object {
@@ -25,41 +24,40 @@ class MarkdownUtils {
         }.sum()
 
         @JvmStatic
-        fun expect(connection: Connection, markdown: String, assert: (Boolean, Row<*>) -> Unit = { fetched, _ ->
-            assert(fetched)
-        }): Any = Markdown(markdown).toData(connection).map { table ->
-            val columnTypes: List<Int> = connection.createStatement().use {
-                it.executeQuery("SELECT ${table.columns.joinToString(separator = ", ")} FROM ${table.name} WHERE 1=0").use {
-                    val meta: ResultSetMetaData = it.metaData
-
-                    table.columns.mapIndexed { index, s ->
-                        val columnIndex = index + 1
-                        meta.getColumnType(columnIndex)
+        fun expect(
+                connection: Connection, markdown: String,
+                assert: (Int, Row<*>) -> Unit = { fetchedCount, _ -> assert(fetchedCount == 1) }
+        ) {
+            Markdown(markdown).toData(connection).map { table ->
+                table.rows.forEach { r ->
+                    connection.prepareStatement("""
+                        SELECT
+                            ${table.columns.joinToString(separator = ", ")}
+                        FROM
+                            ${table.name}
+                        WHERE
+                            ${table.columns
+                            .mapIndexed { i, c -> if (r.values[i] != null) "$c = ?" else "$c IS NULL" }
+                            .joinToString(separator = " AND ")
                     }
-                }
-            }.toList()
-
-            table.rows.forEach { r ->
-                connection.prepareStatement("""
-                    SELECT
-                        ${table.columns.joinToString(separator = ", ")}
-                    FROM
-                        ${table.name}
-                    WHERE
-                        ${table.columns
-                        .mapIndexed { i, c -> if (r.values[i] != null) "$c = ?" else "$c IS NULL" }
-                        .joinToString(separator = " AND ")} 
-                """.trimIndent()).use { statement ->
-                    var index = 1
-                    r.values.forEach {
-                        if (it != null) statement.setObject(index++, it)
+                    """.trimIndent()).use { statement ->
+                        var index = 1
+                        r.values.forEach {
+                            if (it != null) statement.setObject(index++, it)
+                        }
+                        statement.executeQuery().use {
+                            var fetchedCount = 0
+                            while (it.next()) fetchedCount++
+                            assert(fetchedCount, r)
+                        }
                     }
-                    statement.executeQuery().use {
-                        assert(it.next(), r)
-                    }
-                    statement.clearParameters()
                 }
             }
+        }
+
+        @JvmStatic
+        fun expect(connection: Connection, markdown: String) = expect(connection, markdown) { fetchedCount, _ ->
+            assert(fetchedCount == 1)
         }
     }
 }
