@@ -8,7 +8,7 @@ Translate table markdown to table data.
 <dependency>
     <groupId>com.yo1000</groupId>
     <artifactId>mk2data</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -64,7 +64,7 @@ dataSource.connection.use {
 
 ### for Java13+
 ```java
-try (Connection conn = ...) {
+try (Connection conn = dataSource.getConnection()) {
     MarkdownUtils.setup(conn, """
         | ID   | Name    | age | BLooD   | Birth_Date
         |------|---------|-----|---------|------------
@@ -105,9 +105,6 @@ try (Connection conn = ...) {
         | '2000' | 'Tama'   | cats     | 20
         | '9000' |          | dogs     | null
         [pets]
-    """, (fetched, row) -> {
-        assertThat(fetched).isTrue();
-        return Unit.INSTANCE; // or `return null;`
-    });
+    """);
 }
 ```

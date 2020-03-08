@@ -303,17 +303,17 @@ class MarkdownTest {
                 | '20' | Bob     | 18  |         | 2002-01-02
                 [owners]
                 
-                | id     | name     | category | owners_id
-                |--------|----------|----------|-----------
-                | '1000' | 'Max'    | dogs     | 10
-                | '1001' | 'Bella'  | dogs     | 10
-                | '1002' |          | dogs     | 10
-                | '1003' | null     | dogs     | 10
-                | '1004' | NULL     | dogs     | 10
-                | '1005' | ''       | dogs     | 10
-                | '1006' | 'null'   | dogs     | 10
-                | '2000' | 'Tama'   | cats     | 20
-                | '9000' |          | dogs     | null
+                id     | name     | category | owners_id
+                -------|----------|----------|-----------
+                '1000' | 'Max'    | dogs     | 10
+                '1001' | 'Bella'  | dogs     | 10
+                '1002' |          | dogs     | 10
+                '1003' | null     | dogs     | 10
+                '1004' | NULL     | dogs     | 10
+                '1005' | ''       | dogs     | 10
+                '1006' | 'null'   | dogs     | 10
+                '2000' | 'Tama'   | cats     | 20
+                '9000' |          | dogs     | null
                 [pets]
             """)).isEqualTo(11) // Insert rows
 
@@ -324,17 +324,17 @@ class MarkdownTest {
                 | '20' | Bob     | 18  |         | 2002-01-02
                 [owners]
                 
-                | id     | name     | category | owners_id
-                |--------|----------|----------|-----------
-                | '1000' | 'Max'    | dogs     | 10
-                | '1001' | 'Bella'  | dogs     | 10
-                | '1002' |          | dogs     | 10
-                | '1003' | null     | dogs     | 10
-                | '1004' | NULL     | dogs     | 10
-                | '1005' | ''       | dogs     | 10
-                | '1006' | 'null'   | dogs     | 10
-                | '2000' | 'Tama'   | cats     | 20
-                | '9000' |          | dogs     | null
+                id     | name     | category | owners_id
+                -------|----------|----------|-----------
+                '1000' | 'Max'    | dogs     | 10
+                '1001' | 'Bella'  | dogs     | 10
+                '1002' |          | dogs     | 10
+                '1003' | null     | dogs     | 10
+                '1004' | NULL     | dogs     | 10
+                '1005' | ''       | dogs     | 10
+                '1006' | 'null'   | dogs     | 10
+                '2000' | 'Tama'   | cats     | 20
+                '9000' |          | dogs     | null
                 [pets]
             """)
         }
