@@ -75,13 +75,19 @@ class Markdown(
                     val indexedParsers: List<ValueParser> = (1..meta.columnCount).map { i ->
                         val columnNameFromTable: String = meta.getColumnLabel(i).toUpperCase()
                         val columnName: String = columns.find { it.toUpperCase() == columnNameFromTable }!!
-                        val valueParseInvoker: Method? = meta.getColumnClassName(i).let {
-                            Class.forName(it)
-                        }.takeIf {
-                            it != String::class.java
-                        }?.getMethod("valueOf", String::class.java)
+                        val columnClass: Class<*> = meta.getColumnClassName(i).let { Class.forName(it) }
+
                         val valueParser: (String) -> Any = fun(s: String): Any {
-                            return valueParseInvoker?.invoke(null, s) ?: s
+                            return columnClass
+                                // 1st trial: Reflect by valueOf
+                                .methods
+                                .find { it.name == "valueOf" && it.parameterCount == 1 && it.parameterTypes.first() == String::class.java }
+                                ?.invoke(null, s) ?: columnClass
+                                    // 2nd trial: Reflect by constructor
+                                    .constructors
+                                    .find { it.parameterCount == 1 && it.parameterTypes.first() == String::class.java }
+                                    ?.newInstance(s)
+                            ?: s
                         }
 
                         ValueParser(

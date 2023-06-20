@@ -3,6 +3,7 @@ package com.yo1000.mk2data
 import org.assertj.core.api.Assertions.assertThat
 import org.h2.Driver
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.sql.Connection
 import java.sql.Date
 import java.sql.DriverManager
@@ -24,22 +25,25 @@ class MarkdownTest {
                 
                 FREE Comment area
 
-                | id     | name     | category | owners_id
-                |--------|----------|----------|-----------
-                | '1000' | 'Max'    | 'dogs'   | '10'
-                | '1001' | 'Bella'  | 'dogs'   | '10'
-                | '1002' |          | 'dogs'   | '10'
-                | '1003' | null     | 'dogs'   | '10'
-                | '1004' | NULL     | 'dogs'   | '10'
-                | '1005' | ''       | 'dogs'   | '10'
-                | '1006' | 'null'   | 'dogs'   | '10'
-                | '2000' | 'Tama'   | 'cats'   | '20'
-                | '9000' |          | 'dogs'   | null
+                | id     | name     | price     | category | owners_id
+                |--------|----------|-----------|----------|-----------
+                | '1000' | 'Max'    | 500000    | 'dogs'     | '10'
+                | '1001' | 'Bella'  | 500000    | 'dogs'     | '10'
+                | '1002' |          |           | 'dogs'     | '10'
+                | '1003' | null     |           | 'dogs'     | '10'
+                | '1004' | NULL     |           | 'dogs'     | '10'
+                | '1005' | ''       | 123456.70 | 'dogs'     | '10'
+                | '1006' | 'null'   | 123456.70 | 'dogs'     | '10'
+                | '2000' | 'Tama'   | 200000    | 'cats'     | '20'
+                | '9000' |          | null      | 'dogs'     | null
                 [pets]
                 
                 FREE Comment area
             """).toData(it).let {
-                assertThat(it).containsExactlyInAnyOrder(
+                assertThat(it)
+                    .usingComparatorForType(BigDecimal::compareTo, BigDecimal::class.java)
+                    .usingRecursiveFieldByFieldElementComparator()
+                    .containsExactlyInAnyOrder(
                         Table(
                                 name = "owners",
                                 data = listOf(
@@ -51,16 +55,16 @@ class MarkdownTest {
                         Table(
                                 name = "pets",
                                 data = listOf(
-                                        listOf("id"  , "name" , "category", "owners_id"),
-                                        listOf("1000", "Max"  , "dogs"    , "10"       ),
-                                        listOf("1001", "Bella", "dogs"    , "10"       ),
-                                        listOf("1002", null   , "dogs"    , "10"       ),
-                                        listOf("1003", null   , "dogs"    , "10"       ),
-                                        listOf("1004", null   , "dogs"    , "10"       ),
-                                        listOf("1005", ""     , "dogs"    , "10"       ),
-                                        listOf("1006", "null" , "dogs"    , "10"       ),
-                                        listOf("2000", "Tama" , "cats"    , "20"       ),
-                                        listOf("9000", null   , "dogs"    , null       )
+                                    listOf("id"  , "name" , "price"                , "category", "owners_id"),
+                                    listOf("1000", "Max"  , BigDecimal("500000")   , "dogs"    , "10"       ),
+                                    listOf("1001", "Bella", BigDecimal("500000.0") , "dogs"    , "10"       ),
+                                    listOf("1002", null   , null                   , "dogs"    , "10"       ),
+                                    listOf("1003", null   , null                   , "dogs"    , "10"       ),
+                                    listOf("1004", null   , null                   , "dogs"    , "10"       ),
+                                    listOf("1005", ""     , BigDecimal("123456.70"), "dogs"    , "10"       ),
+                                    listOf("1006", "null" , BigDecimal("123456.7") , "dogs"    , "10"       ),
+                                    listOf("2000", "Tama" , BigDecimal("200000.00"), "cats"    , "20"       ),
+                                    listOf("9000", null   , null                   , "dogs"    , null       )
                                 )
                         )
                 )
@@ -81,17 +85,17 @@ class MarkdownTest {
             
             FREE Comment area
             
-            | id     | name     | category | owners_id
-            |--------|----------|----------|-----------
-            | '1000' | 'Max'    | 'dogs'   | '10'
-            | '1001' | 'Bella'  | 'dogs'   | '10'
-            | '1002' |          | 'dogs'   | '10'
-            | '1003' | null     | 'dogs'   | '10'
-            | '1004' | NULL     | 'dogs'   | '10'
-            | '1005' | ''       | 'dogs'   | '10'
-            | '1006' | 'null'   | 'dogs'   | '10'
-            | '2000' | 'Tama'   | 'cats'   | '20'
-            | '9000' |          | 'dogs'   | null
+            | id     | name     | price    | category | owners_id
+            |--------|----------|----------|----------|-----------
+            | '1000' | 'Max'    | 500000   | dogs     | '10'
+            | '1001' | 'Bella'  | 500000   | dogs     | '10'
+            | '1002' |          |          | dogs     | '10'
+            | '1003' | null     |          | dogs     | '10'
+            | '1004' | NULL     |          | dogs     | '10'
+            | '1005' | ''       | 123456.7 | dogs     | '10'
+            | '1006' | 'null'   | 123456.7 | dogs     | '10'
+            | '2000' | 'Tama'   | 200000   | cats     | '20'
+            | '9000' |          | null     | dogs     | null
             [pets]
             
             FREE Comment area
@@ -108,16 +112,16 @@ class MarkdownTest {
                     Table(
                             name = "pets",
                             data = listOf(
-                                    listOf("id"  , "name" , "category", "owners_id"),
-                                    listOf("1000", "Max"  , "dogs"    , "10"       ),
-                                    listOf("1001", "Bella", "dogs"    , "10"       ),
-                                    listOf("1002", null   , "dogs"    , "10"       ),
-                                    listOf("1003", null   , "dogs"    , "10"       ),
-                                    listOf("1004", null   , "dogs"    , "10"       ),
-                                    listOf("1005", ""     , "dogs"    , "10"       ),
-                                    listOf("1006", "null" , "dogs"    , "10"       ),
-                                    listOf("2000", "Tama" , "cats"    , "20"       ),
-                                    listOf("9000", null   , "dogs"    , null       )
+                                    listOf("id"  , "name" , "price"   , "category", "owners_id"),
+                                    listOf("1000", "Max"  , "500000"  , "dogs"    , "10"       ),
+                                    listOf("1001", "Bella", "500000"  , "dogs"    , "10"       ),
+                                    listOf("1002", null   , null      , "dogs"    , "10"       ),
+                                    listOf("1003", null   , null      , "dogs"    , "10"       ),
+                                    listOf("1004", null   , null      , "dogs"    , "10"       ),
+                                    listOf("1005", ""     , "123456.7", "dogs"    , "10"       ),
+                                    listOf("1006", "null" , "123456.7", "dogs"    , "10"       ),
+                                    listOf("2000", "Tama" , "200000"  , "cats"    , "20"       ),
+                                    listOf("9000", null   , null      , "dogs"    , null       )
                             )
                     )
             )
@@ -135,17 +139,17 @@ class MarkdownTest {
                 | '20' | 'Bob'   | 18  |         | 2002-01-02
                 [owners]
                 
-                | id     | name     | category | owners_id
-                |--------|----------|----------|-----------
-                | '1000' | 'Max'    | 'dogs'   | '10'
-                | '1001' | 'Bella'  | 'dogs'   | '10'
-                | '1002' |          | 'dogs'   | '10'
-                | '1003' | null     | 'dogs'   | '10'
-                | '1004' | NULL     | 'dogs'   | '10'
-                | '1005' | ''       | 'dogs'   | '10'
-                | '1006' | 'null'   | 'dogs'   | '10'
-                | '2000' | 'Tama'   | 'cats'   | '20'
-                | '9000' |          | 'dogs'   | null
+                | id     | name     | price    | category | owners_id
+                |--------|----------|----------|----------|-----------
+                | '1000' | 'Max'    | 500000   | dogs     | 10
+                | '1001' | 'Bella'  | 500000   | dogs     | 10
+                | '1002' |          |          | dogs     | 10
+                | '1003' | null     |          | dogs     | 10
+                | '1004' | NULL     |          | dogs     | 10
+                | '1005' | ''       | 123456.7 | dogs     | 10
+                | '1006' | 'null'   | 123456.7 | dogs     | 10
+                | '2000' | 'Tama'   | 200000   | cats     | 20
+                | '9000' |          | null     | dogs     | null
                 [pets]
                 
             """)).isEqualTo(11) // Insert rows
@@ -180,7 +184,7 @@ class MarkdownTest {
             it.createStatement().use {
                 it.executeQuery("""
                     SELECT
-                        id, name, category, owners_id
+                        id, name, price, category, owners_id
                     FROM
                         pets
                     ORDER BY
@@ -189,54 +193,63 @@ class MarkdownTest {
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("1000")
                     assertThat(it.getString("name")).isEqualTo("Max")
+                    assertThat(it.getBigDecimal("price")).isEqualTo(BigDecimal("500000.00"))
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo("10")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("1001")
                     assertThat(it.getString("name")).isEqualTo("Bella")
+                    assertThat(it.getBigDecimal("price")).isEqualTo(BigDecimal("500000.00"))
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo("10")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("1002")
                     assertThat(it.getString("name")).isEqualTo(null)
+                    assertThat(it.getBigDecimal("price")).isNull()
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo("10")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("1003")
                     assertThat(it.getString("name")).isEqualTo(null)
+                    assertThat(it.getBigDecimal("price")).isNull()
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo("10")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("1004")
                     assertThat(it.getString("name")).isEqualTo(null)
+                    assertThat(it.getBigDecimal("price")).isNull()
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo("10")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("1005")
                     assertThat(it.getString("name")).isEqualTo("")
+                    assertThat(it.getBigDecimal("price")).isEqualTo(BigDecimal("123456.70"))
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo("10")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("1006")
                     assertThat(it.getString("name")).isEqualTo("null")
+                    assertThat(it.getBigDecimal("price")).isEqualTo(BigDecimal("123456.70"))
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo("10")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("2000")
                     assertThat(it.getString("name")).isEqualTo("Tama")
+                    assertThat(it.getBigDecimal("price")).isEqualTo(BigDecimal("200000.00"))
                     assertThat(it.getString("category")).isEqualTo("cats")
                     assertThat(it.getString("owners_id")).isEqualTo("20")
 
                     assertThat(it.next()).isTrue()
                     assertThat(it.getString("id")).isEqualTo("9000")
                     assertThat(it.getString("name")).isEqualTo(null)
+                    assertThat(it.getBigDecimal("price")).isNull()
                     assertThat(it.getString("category")).isEqualTo("dogs")
                     assertThat(it.getString("owners_id")).isEqualTo(null)
 
@@ -254,15 +267,15 @@ class MarkdownTest {
                     "INSERT INTO owners (id, name, age, blood, birth_date) VALUES ('10', 'Alice', 20, 'A' , '2000-03-05')",
                     "INSERT INTO owners (id, name, age, blood, birth_date) VALUES ('20', 'Bob'  , 18, null, '2002-01-02')",
 
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1000', 'Max'  , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1001', 'Bella', 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1002', null   , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1003', null   , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1004', null   , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1005', ''     , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('1006', 'null' , 'dogs', '10')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('2000', 'Tama' , 'cats', '20')",
-                    "INSERT INTO pets (id, name, category, owners_id) VALUES ('9000', null   , 'dogs', null)"
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('1000', 'Max'  , 500000  , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('1001', 'Bella', 500000  , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('1002', null   , null    , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('1003', null   , null    , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('1004', null   , null    , 'dogs', '10')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('1005', ''     , 123456.7, 'dogs', '10')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('1006', 'null' , 123456.7, 'dogs', '10')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('2000', 'Tama' , 200000  , 'cats', '20')",
+                    "INSERT INTO pets (id, name, price, category, owners_id) VALUES ('9000', null   , null    , 'dogs', null)"
             ).forEach(it::addBatch)
                 it.executeBatch()
             }
@@ -274,17 +287,17 @@ class MarkdownTest {
                 | '20' | 'Bob'   | 18  |         | 2002-01-02
                 [owners]
                 
-                | id     | name     | category | owners_id
-                |--------|----------|----------|-----------
-                | '1000' | 'Max'    | 'dogs'   | '10'
-                | '1001' | 'Bella'  | 'dogs'   | '10'
-                | '1002' |          | 'dogs'   | '10'
-                | '1003' | null     | 'dogs'   | '10'
-                | '1004' | NULL     | 'dogs'   | '10'
-                | '1005' | ''       | 'dogs'   | '10'
-                | '1006' | 'null'   | 'dogs'   | '10'
-                | '2000' | 'Tama'   | 'cats'   | '20'
-                | '9000' |          | 'dogs'   | null
+                | id     | name     | price     | category | owners_id
+                |--------|----------|-----------|----------|-----------
+                | '1000' | 'Max'    | 500000    | dogs     | 10
+                | '1001' | 'Bella'  | 500000.00 | dogs     | 10
+                | '1002' |          |           | dogs     | 10
+                | '1003' | null     |           | dogs     | 10
+                | '1004' | NULL     |           | dogs     | 10
+                | '1005' | ''       | 123456.7  | dogs     | 10
+                | '1006' | 'null'   | 123456.70 | dogs     | 10
+                | '2000' | 'Tama'   | 200000    | cats     | 20
+                | '9000' |          | null      | dogs     | null
                 [pets]
             """.trimIndent()) { fetched, row ->
                 assertThat(fetched).isEqualTo(1)
@@ -303,17 +316,17 @@ class MarkdownTest {
                 | '20' | Bob     | 18  |         | 2002-01-02
                 [owners]
                 
-                id     | name     | category | owners_id
-                -------|----------|----------|-----------
-                '1000' | 'Max'    | dogs     | 10
-                '1001' | 'Bella'  | dogs     | 10
-                '1002' |          | dogs     | 10
-                '1003' | null     | dogs     | 10
-                '1004' | NULL     | dogs     | 10
-                '1005' | ''       | dogs     | 10
-                '1006' | 'null'   | dogs     | 10
-                '2000' | 'Tama'   | cats     | 20
-                '9000' |          | dogs     | null
+                id     | name     | price     | category | owners_id
+                -------|----------|-----------|----------|-----------
+                '1000' | 'Max'    | 500000    | dogs     | 10
+                '1001' | 'Bella'  | 500000.0  | dogs     | 10
+                '1002' |          |           | dogs     | 10
+                '1003' | null     |           | dogs     | 10
+                '1004' | NULL     |           | dogs     | 10
+                '1005' | ''       | 123456.7  | dogs     | 10
+                '1006' | 'null'   | 123456.70 | dogs     | 10
+                '2000' | 'Tama'   | 200000    | cats     | 20
+                '9000' |          | null      | dogs     | null
                 [pets]
             """)).isEqualTo(11) // Insert rows
 
@@ -324,17 +337,17 @@ class MarkdownTest {
                 | '20' | Bob     | 18  |         | 2002-01-02
                 [owners]
                 
-                id     | name     | category | owners_id
-                -------|----------|----------|-----------
-                '1000' | 'Max'    | dogs     | 10
-                '1001' | 'Bella'  | dogs     | 10
-                '1002' |          | dogs     | 10
-                '1003' | null     | dogs     | 10
-                '1004' | NULL     | dogs     | 10
-                '1005' | ''       | dogs     | 10
-                '1006' | 'null'   | dogs     | 10
-                '2000' | 'Tama'   | cats     | 20
-                '9000' |          | dogs     | null
+                id     | name     | price     | category | owners_id
+                -------|----------|-----------|----------|-----------
+                '1000' | 'Max'    | 500000    | dogs     | 10
+                '1001' | 'Bella'  | 500000.00 | dogs     | 10
+                '1002' |          |           | dogs     | 10
+                '1003' | null     |           | dogs     | 10
+                '1004' | NULL     |           | dogs     | 10
+                '1005' | ''       | 123456.7  | dogs     | 10
+                '1006' | 'null'   | 123456.7  | dogs     | 10
+                '2000' | 'Tama'   | 200000    | cats     | 20
+                '9000' |          | null      | dogs     | null
                 [pets]
             """)
         }
@@ -354,6 +367,7 @@ class MarkdownTest {
                     CREATE TABLE pets (
                         id          varchar(40) NOT NULL    PRIMARY KEY ,
                         name        varchar(40)                         ,
+                        price       number(8,2)                         ,
                         category    varchar(20) NOT NULL                ,
                         owners_id   varchar(40)
                     );
