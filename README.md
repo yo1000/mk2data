@@ -8,7 +8,7 @@ Translate table markdown to table data.
 <dependency>
     <groupId>com.yo1000</groupId>
     <artifactId>mk2data</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
