@@ -46,7 +46,7 @@
         <flexmark.version>0.60.2</flexmark.version>
         <junit.platform.version>5.5.2</junit.platform.version>
         <assertj.version>3.14.0</assertj.version>
-        <h2database.version>1.4.199</h2database.version>
+        <h2database.version>2.1.210</h2database.version>
         <dokka.version>0.10.1</dokka.version>
     </properties>
 
